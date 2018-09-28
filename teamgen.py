@@ -1,3 +1,4 @@
+import functools
 import itertools
 import json
 import requests
@@ -39,29 +40,30 @@ def teamgen(c1, c2, c3, c4, allow_subs=True):
     o2 = set(c.upper() for c in c2)
     o3 = set(c.upper() for c in c3)
     o4 = set(c.upper() for c in c4)
-    original = o1 | o2 | o3 | o4
+    osets = [s for s in (o1, o2, o3, o4) if s]       # ignore any empty sets
+    original = functools.reduce(lambda s, t: s.union(t), osets)
 
     if allow_subs:
-        c1 = substitute(o1)
-        c2 = substitute(o2)
-        c3 = substitute(o3)
-        c4 = substitute(o4)
-        options = itertools.product(c1, c2, c3, c4)
+        ssets = [substitute(o) for o in osets]       # "sub" sets (i.e. sets with substitutions)
+        options = itertools.product(*ssets)
     else:
-        options = itertools.product(o1, o2, o3, o4)
+        options = itertools.product(*osets)
 
     colors = get_data()
     for opt in options:
         tup = tuple(x.upper() for x in opt)
         for color in colors:
             name = color['name'].upper()
-            if all(x in name for x in tup) and name.startswith(tup):
-                team = ''.join(sorted(tup, key=lambda s: name.index(s)))
+            if all(x in name for x in tup):
+                if len(osets) < 4 or name.startswith(tup):
+                    # we want to include all matches for team size < 4
+                    # but if all four names are given, the name has to start with one of those letters
+                    team = ''.join(sorted(tup, key=lambda s: name.index(s)))
 
-                if allow_subs:
-                    invsub = invert_dict(SUBS)
-                    for letter in team:
-                        if letter not in original:
-                            team = team.replace(letter, invsub[letter])
+                    if allow_subs:
+                        invsub = invert_dict(SUBS)
+                        for letter in team:
+                            if letter not in original:
+                                team = team.replace(letter, invsub[letter])
 
-                yield team, color['name'], color['hex']
+                    yield team, color['name'], color['hex']

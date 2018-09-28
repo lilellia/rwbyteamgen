@@ -33,8 +33,8 @@ def index():
 
         return render_template(
             'index.html',
-            options_nosub=options_nosub_dict,
-            options_withsub=options_withsub_dict,
+            options_nosub=sorted(options_nosub_dict, key=lambda t: (t['team'], t['name'])),
+            options_withsub=sorted(options_withsub_dict, key=lambda t: (t['team'], t['name'])),
             allowed_subs=allowed_subs
         )
     else:
