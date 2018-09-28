@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>RWBY Universe Team Name Generator</title>
+        
+    </head>
+
+    <body>
+        <h1>RWBY Universe Team Name Generator</h1>
+        <p>
+            RWBY is an animated series created by <a href="https://roosterteeth.com/">Rooster Teeth</a>. In its universe, characters are assigned a team of four, and the team name is
+            <ul>
+                <li>a color/associated with a color/reminds you of a color</li>
+                <li>formed using the first letters of the first (sometimes last) names of the characters</li>
+            </ul>
+            For example, <b>R</b>uby Rose, <b>W</b>eiss Schnee, <b>B</b>lake Belladonna, and <b>Y</b>ang Xiao Long form Team RWBY ("Ruby"). From this, we also see that some letter substitutions are allowed. From JNPR, CRDL, and BRNZ, we also learn that last names are allowed to be used in place of first names.
+
+            All of the known team names:
+            <ul>
+                <li>RWBY ("Ruby"): Ruby Rose, Weiss Schnee, Blake Belladonna, Yang Xiao Long</li>
+                <li>JNPR ("Juniper"): Jaune Arc, Nora Valkerie, Pyrrha Nikos, Lie Ren</li>
+                <li>CRDL ("Cardinal"): Cardin Winchester, Russel Thrush, Dove Bronzewing, Sky Lark</li>
+                <li>CFVY ("Coffee"): Coco Adel, Fox Alistair, Velvet Scarletina, Yatsuhashi Dashi</li>
+                <li>SSSN ("Sun"): Sun Wukong, Scarlet David, Sage Ayana, Neptune Vasilias</li>
+                <li>ABRN ("Auburn"): Arslan Altan, Bolin Hori, Reese Chloris, Nadir Shiko</li>
+                <li>BRNZ ("Bronze"): Brawnz Ni, Roy Stallion, Nolan Porfrio, May Zedong</li>
+                <li>FNKI ("Funky"): Flynt Coal, Neon Katt, ...</li>
+                <li>STRQ ("Stark"): Summer Rose, Taiyang Xiao Long, Raven Branwen, Qrow Branwen</li>
+            </ul>
+
+            Penny's team (Penny Polendina, Ciel Soleil, ...) and Cinder's team (Cinder Fall, Mercury Black, Emerald Sustrai, Neopolitan) are not given names in the show.
+        </p>
+
+        <p>
+            Here, you can generate a list of possible team names given a list of characters. If you only want to use first names, leave the last name box blank. <br>
+            
+            Any returned color is guaranteed to contain all of the letters of the team name, but it's definitely not guaranteed to be pronounced anything like the team name would indicate. This list is also not comprehensive.
+        </p>
+
+        <form action="" method="post">
+            <table>
+                <thead>
+                    <th></th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                </thead>
+
+                <tr>
+                    <th>Character 1</th>
+                    <td><input type="text" name="char1_first"></td>
+                    <td><input type="text" name="char1_last"></td>
+                </tr>
+
+                <tr>
+                    <th>Character 2</th>
+                    <td><input type="text" name="char2_first"></td>
+                    <td><input type="text" name="char2_last"></td>
+                </tr>
+
+                <tr>
+                    <th>Character 3</th>
+                    <td><input type="text" name="char3_first"></td>
+                    <td><input type="text" name="char3_last"></td>
+                </tr>
+
+                <tr>
+                    <th>Character 4</th>
+                    <td><input type="text" name="char4_first"></td>
+                    <td><input type="text" name="char4_last"></td>
+                </tr>
+
+                <tr>
+                    <th></th>
+                    <td></td>
+                    <td><button>Generate</button></td>
+                </tr>
+            </table>
+        </form>
+
+        {% if options_nosub %}
+            <b>Options without letter substitions:</b>
+            <ul>
+                {% for opt in options_nosub %}
+                    <li>{{ opt.team }} ({{ opt.name }} <font color={{opt.hexstring}}>= {{ opt.hexstring }}</font>)</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if options_withsub %}
+            <b>Options with letter substitions ({{ allowed_subs }}):</b>
+            <ul>
+                {% for opt in options_withsub %}
+                <li>{{ opt.team }} ({{ opt.name }} <font color={{opt.hexstring}}>= {{ opt.hexstring }}</font>)</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        Color data taken from <a href="https://github.com/meodai/color-names">this API</a>.
+    </body>
+
+</html>
