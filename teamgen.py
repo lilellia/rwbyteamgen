@@ -54,7 +54,7 @@ def teamgen(c1, c2, c3, c4, allow_subs=True):
         tup = tuple(x.upper() for x in opt)
         for color in colors:
             name = color['name'].upper()
-            if all(x in name for x in tup):
+            if all(name.count(x) == 1 for x in tup):
                 if len(osets) < 4 or name.startswith(tup):
                     # we want to include all matches for team size < 4
                     # but if all four names are given, the name has to start with one of those letters
