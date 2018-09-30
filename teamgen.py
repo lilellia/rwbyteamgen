@@ -31,8 +31,11 @@ def get_random_teams(k=10):
     n = len(colors)
     for i in random.sample(range(n), k):
         color = colors[i]
-        name = ''.join(str(e).upper() for e in random.sample(color['name'], 4))
-        yield name, color['name'], color['hex']
+        try:
+            name = ''.join(str(e).upper() for e in random.sample(color['name'], 4))
+            yield name, color['name'], color['hex']
+        except ValueError:
+            pass
 
 def substitute(letter_set: set):
     result = letter_set.copy()
