@@ -26,11 +26,11 @@ def get_data():
     
     return data
 
-def get_random_teams(n=10):
+def get_random_teams(k=10):
     colors = get_data()
-    lcolors = list(colors)
-    for c in random.sample(lcolors, n):
-        color = colors[c]
+    n = len(colors)
+    for i in random.sample(range(n), k):
+        color = colors[i]
         name = ''.join(str(e).upper() for e in random.sample(color['name'], 4))
         yield name, color['name'], color['hex']
 
