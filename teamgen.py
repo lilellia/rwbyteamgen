@@ -32,7 +32,7 @@ def get_random_teams(k=10):
     for i in random.sample(range(n), k):
         color = colors[i]
         try:
-            name = ''.join(str(e).upper() for e in random.sample(color['name'], 4))
+            name = ''.join(sorted(e.upper() for e in random.sample(color['name'], 4), key=lambda e: color['name'].upper().index(e)))
             yield name, color['name'], color['hex']
         except ValueError:
             pass
