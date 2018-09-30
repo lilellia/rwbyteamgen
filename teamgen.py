@@ -1,6 +1,7 @@
 import functools
 import itertools
 import json
+import random
 import requests
 
 SUBS = {
@@ -25,6 +26,14 @@ def get_data():
     
     return data
 
+def get_random_teams(n=10):
+    colors = get_data()
+    lcolors = list(colors)
+    for c in random.sample(lcolors, n):
+        color = colors[c]
+        name = ''.join(str(e).upper() for e in random.sample(color['name'], 4))
+        yield name, color['name'], color['hex']
+
 def substitute(letter_set: set):
     result = letter_set.copy()
     for k, v in SUBS.items():
@@ -33,7 +42,7 @@ def substitute(letter_set: set):
     
     return result
 
-def teamgen(c1, c2, c3, c4, allow_subs=True):
+def teamgen(c1, c2, c3, c4, allow_subs=True, fix_leader=False):
     
     # original letter sets
     o1 = set(c.upper() for c in c1)
@@ -52,10 +61,16 @@ def teamgen(c1, c2, c3, c4, allow_subs=True):
     colors = get_data()
     for opt in options:
         tup = tuple(x.upper() for x in opt)
+        
+        if fix_leader:
+            start_tup = tuple(c1 if allow_subs else o1)
+        else:
+            start_tup = tup
+
         for color in colors:
             name = color['name'].upper()
             if all(name.count(x) == 1 for x in tup):
-                if len(osets) < 4 or name.startswith(tup):
+                if len(osets) < 4 or name.startswith(start_tup):
                     # we want to include all matches for team size < 4
                     # but if all four names are given, the name has to start with one of those letters
                     team = ''.join(sorted(tup, key=lambda s: name.index(s)))

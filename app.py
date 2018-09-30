@@ -16,27 +16,42 @@ def index():
         c2 = {f['char2_first'][:1].upper(), f['char2_last'][:1].upper()} - {''}
         c3 = {f['char3_first'][:1].upper(), f['char3_last'][:1].upper()} - {''}
         c4 = {f['char4_first'][:1].upper(), f['char4_last'][:1].upper()} - {''}
+        fix_leader = f.get('fix_leader')
 
-        options_nosub = set(teamgen.teamgen(c1, c2, c3, c4, False))
-        options_withsub = set(teamgen.teamgen(c1, c2, c3, c4, True)) - options_nosub
+        if len(c1 | c2 | c3 | c4) == 0:
+            # simply return a few random choices
+            options_nosub = set(teamgen.get_random_teams(10))
 
-        options_nosub_dict = [
-            {'team': t, 'name': n, 'hexstring': h.upper()}
-            for t, n, h in options_nosub
-        ]
-        options_withsub_dict = [
-            {'team': t, 'name': n, 'hexstring': h.upper()}
-            for t, n, h in options_withsub
-        ]
+            options_nosub_dict = [
+                {'team': t, 'name': n, 'hexstring': h.upper()}
+                for t, n, h in options_nosub
+            ]
 
-        allowed_subs = ', '.join(f'{k}\u2192{v}' for k, v in teamgen.SUBS.items())
+            return render_template(
+                'index.html',
+                options_nosub=sorted(options_nosub_dict, key=lambda t: (t['team'], t['name']))
+            )
+        else:
+            options_nosub = set(teamgen.teamgen(c1, c2, c3, c4, False, fix_leader))
+            options_withsub = set(teamgen.teamgen(c1, c2, c3, c4, True, fix_leader)) - options_nosub
 
-        return render_template(
-            'index.html',
-            options_nosub=sorted(options_nosub_dict, key=lambda t: (t['team'], t['name'])),
-            options_withsub=sorted(options_withsub_dict, key=lambda t: (t['team'], t['name'])),
-            allowed_subs=allowed_subs
-        )
+            options_nosub_dict = [
+                {'team': t, 'name': n, 'hexstring': h.upper()}
+                for t, n, h in options_nosub
+            ]
+            options_withsub_dict = [
+                {'team': t, 'name': n, 'hexstring': h.upper()}
+                for t, n, h in options_withsub
+            ]
+
+            allowed_subs = ', '.join(f'{k}\u2192{v}' for k, v in teamgen.SUBS.items())
+
+            return render_template(
+                'index.html',
+                options_nosub=sorted(options_nosub_dict, key=lambda t: (t['team'], t['name'])),
+                options_withsub=sorted(options_withsub_dict, key=lambda t: (t['team'], t['name'])),
+                allowed_subs=allowed_subs
+            )
     else:
         return render_template('index.html')
 
