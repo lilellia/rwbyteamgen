@@ -11,7 +11,7 @@ app.config['SECRET_KEY'] = '...'
 def index():
     if request.method == 'POST':
         f = request.form
-        
+
         c1 = {f['char1_first'][:1].upper(), f['char1_last'][:1].upper()} - {''}
         c2 = {f['char2_first'][:1].upper(), f['char2_last'][:1].upper()} - {''}
         c3 = {f['char3_first'][:1].upper(), f['char3_last'][:1].upper()} - {''}
@@ -55,7 +55,8 @@ def index():
     else:
         return render_template('index.html')
 
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    # app.run(host='127.0.0.1', port=5000)        # localhost
-    app.run(host='0.0.0.0', port=port)        # server
+    # app.run(host='127.0.0.1', port=5000)      # localhost
+    app.run(host='0.0.0.0', port=port)          # server

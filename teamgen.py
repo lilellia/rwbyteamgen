@@ -2,7 +2,6 @@ import functools
 import itertools
 import json
 import random
-import requests
 
 SUBS = {
     'I': 'Y',
@@ -12,41 +11,40 @@ SUBS = {
     'W': 'U'
 }
 
+
 def invert_dict(d):
     return {v: k for k, v in d.items()}
 
 
 def get_data():
-    r = requests.get('https://api.color.pizza/v1/')
-    full_data = json.loads(r.content.decode())
-    # full_data = {'colors': [{'name': ..., 'hex': ..., ...}]}
+    with open('_colors.json') as f:
+        return json.load(f)
 
-    # filter data according to single words
-    data = [color for color in full_data['colors'] if ' ' not in color['name'] and '-' not in color['name']]
-    
-    return data
 
 def get_random_teams(k=10):
     colors = get_data()
-    n = len(colors)
-    for i in random.sample(range(n), k):
-        color = colors[i]
+
+    for color in random.sample(colors, k):
         try:
-            name = ''.join(sorted((e.upper() for e in random.sample(color['name'], 4)), key=lambda e: color['name'].upper().index(e)))
+            def _key(e):
+                return color['name'].upper().index(e)
+
+            name = ''.join(sorted((e.upper() for e in random.sample(color['name'], 4)), key=_key))
             yield name, color['name'], color['hex']
         except ValueError:
             pass
+
 
 def substitute(letter_set: set):
     result = letter_set.copy()
     for k, v in SUBS.items():
         if k in letter_set:
             result.add(v)
-    
+
     return result
 
+
 def teamgen(c1, c2, c3, c4, allow_subs=True, fix_leader=False):
-    
     # original letter sets
     o1 = set(c.upper() for c in c1)
     o2 = set(c.upper() for c in c2)
@@ -64,7 +62,7 @@ def teamgen(c1, c2, c3, c4, allow_subs=True, fix_leader=False):
     colors = get_data()
     for opt in options:
         tup = tuple(x.upper() for x in opt)
-        
+
         if fix_leader:
             start_tup = tuple(c1 if allow_subs else o1)
         else:
